@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - FuelDel</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='static-files.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #10b981;
+        --primary-dark: #059669;
+        --primary-light: #d1fae5;
+        --primary-bg: #f0fdf4;
+        --secondary-color: #064e3b;
+        --accent-color: #34d399;
+        --text-color: #1e293b;
+        --text-light: #64748b;
+        --light-gray: #e2e8f0;
+        --white: #ffffff;
+        --border-radius: 12px;
+        --box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: var(--primary-bg);
+        color: var(--text-color);
+        font-family: "Plus Jakarta Sans", sans-serif;
+        line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        background-color: var(--white);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      nav {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo h1 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--primary-color);
+        margin: 0;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .nav-links {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        gap: 1.5rem;
+      }
+
+      .nav-links li a {
+        color: var(--text-color);
+        text-decoration: none;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        transition: var(--transition);
+      }
+
+      .nav-links li a:hover {
+        background-color: var(--primary-light);
+        color: var(--primary-color);
+      }
+
+      main {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+      }
+
+      .form-container {
+        background-color: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        width: 100%;
+        max-width: 450px;
+        padding: 2.5rem;
+        position: relative;
+        overflow: hidden;
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      .form-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 8px;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+      }
+
+      .form-container::after {
+        content: "";
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background-color: var(--primary-light);
+        opacity: 0.3;
+        z-index: 0;
+      }
+
+      h2 {
+        color: var(--secondary-color);
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+      }
+
+      .login-form {
+        position: relative;
+        z-index: 1;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--text-color);
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 1rem;
+        border: 1px solid var(--light-gray);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: var(--transition);
+        background-color: #f8fafc;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        background-color: var(--white);
+      }
+
+      .form-group input::placeholder {
+        color: var(--text-light);
+        opacity: 0.7;
+      }
+
+      .btn {
+        display: inline-block;
+        font-weight: 600;
+        text-align: center;
+        vertical-align: middle;
+        cursor: pointer;
+        user-select: none;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        border-radius: 8px;
+        transition: var(--transition);
+      }
+
+      .btn-primary {
+        background-color: var(--primary-color);
+        color: var(--white);
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn-block {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+      }
+
+      .form-footer {
+        text-align: center;
+        margin-top: 2rem;
+        color: var(--text-light);
+        font-size: 0.95rem;
+      }
+
+      .link {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 600;
+        transition: var(--transition);
+      }
+
+      .link:hover {
+        color: var(--primary-dark);
+        text-decoration: underline;
+      }
+
+      .alert {
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+        border-left: 4px solid;
+        display: flex;
+        align-items: center;
+        animation: slideIn 0.3s ease;
+      }
+
+      .alert::before {
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        margin-right: 0.75rem;
+        font-size: 1.1rem;
+      }
+
+      .alert-success {
+        background-color: var(--primary-light);
+        color: var(--primary-dark);
+        border-color: var(--primary-color);
+      }
+
+      .alert-success::before {
+        content: "\f058"; /* check-circle icon */
+        color: var(--primary-color);
+      }
+
+      .alert-error {
+        background-color: #fee2e2;
+        color: #991b1b;
+        border-color: #ef4444;
+      }
+
+      .alert-error::before {
+        content: "\f057"; /* times-circle icon */
+        color: #ef4444;
+      }
+
+      .fancy-input {
+        position: relative;
+      }
+
+      .fancy-input input {
+        padding-left: 2.5rem;
+      }
+
+      .fancy-input::before {
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-light);
+        font-size: 1rem;
+      }
+
+      .email-input::before {
+        content: "\f0e0"; /* envelope icon */
+      }
+
+      .password-input::before {
+        content: "\f023"; /* lock icon */
+      }
+
+      footer {
+        background-color: var(--secondary-color);
+        color: white;
+        text-align: center;
+        padding: 1.5rem;
+        margin-top: auto;
+      }
+
+      footer p {
+        margin: 0;
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
+      .remember-me {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .remember-me input {
+        margin-right: 0.5rem;
+        width: 1rem;
+        height: 1rem;
+        accent-color: var(--primary-color);
+      }
+
+      .remember-me label {
+        font-size: 0.95rem;
+        color: var(--text-light);
+      }
+
+      .forgot-password {
+        display: block;
+        text-align: right;
+        margin-top: -1rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .form-container {
+          padding: 2rem 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">
+          <h1>FuelDel</h1>
+        </div>
+        <ul class="nav-links">
+          <li><a href="{{ url_for('home') }}">Home</a></li>
+          <li><a href="{{ url_for('register') }}">Register</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section class="form-container">
+        <h2>Welcome Back</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %} {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %} {% endif %} {% endwith %}
+        <form action="{{ url_for('login') }}" method="post" class="login-form">
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <div class="fancy-input email-input">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                placeholder="Enter your email"
+                autocomplete="email"
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="fancy-input password-input">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                required
+                placeholder="Enter your password"
+                autocomplete="current-password"
+              />
+            </div>
+          </div>
+
+          <div class="remember-me">
+            <input type="checkbox" id="remember" name="remember" />
+            <label for="remember">Remember me</label>
+          </div>
+
+          <a href="#" class="link forgot-password">Forgot password?</a>
+
+          <button type="submit" class="btn btn-primary btn-block">
+            Sign In
+          </button>
+        </form>
+        <p class="form-footer">
+          Don't have an account?
+          <a href="{{ url_for('register') }}" class="link">Create one here</a>
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 FuelDel. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

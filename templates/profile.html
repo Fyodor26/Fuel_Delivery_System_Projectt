@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile - FuelDel</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='static-files.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #10b981;
+        --primary-dark: #059669;
+        --primary-light: #d1fae5;
+        --primary-bg: #f0fdf4;
+        --secondary-color: #064e3b;
+        --accent-color: #34d399;
+        --text-color: #1e293b;
+        --text-light: #64748b;
+        --light-gray: #e2e8f0;
+        --white: #ffffff;
+        --border-radius: 12px;
+        --box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      body {
+        background-color: var(--primary-bg);
+        color: var(--text-color);
+        font-family: "Plus Jakarta Sans", sans-serif;
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+      }
+
+      header {
+        background-color: var(--white);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      nav {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo h1 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--primary-color);
+        margin: 0;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .nav-links {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        gap: 1.5rem;
+      }
+
+      .nav-links li a {
+        color: var(--text-color);
+        text-decoration: none;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        transition: var(--transition);
+      }
+
+      .nav-links li a:hover {
+        background-color: var(--primary-light);
+        color: var(--primary-color);
+      }
+
+      .nav-links li a.active {
+        background-color: var(--primary-color);
+        color: var(--white);
+      }
+
+      main {
+        min-height: calc(100vh - 180px);
+      }
+
+      .profile-section {
+        max-width: 800px;
+        margin: 3rem auto;
+        padding: 0 2rem;
+      }
+
+      h2 {
+        color: var(--secondary-color);
+        font-size: 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        display: inline-block;
+      }
+
+      h2::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: var(--primary-color);
+        border-radius: 2px;
+      }
+
+      .profile-content {
+        margin-top: 2rem;
+      }
+
+      .info-card {
+        background: var(--white);
+        padding: 2.5rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        border-top: 5px solid var(--primary-color);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .info-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 150px;
+        height: 150px;
+        background: var(--primary-light);
+        border-radius: 50%;
+        transform: translate(50%, -50%);
+        opacity: 0.5;
+        z-index: 0;
+      }
+
+      .info-card h3 {
+        margin-bottom: 1.5rem;
+        color: var(--secondary-color);
+        font-size: 1.5rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .form-group {
+        margin-bottom: 1.8rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--text-color);
+        font-size: 0.95rem;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 1rem;
+        border: 1px solid var(--light-gray);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: var(--transition);
+        font-family: inherit;
+        color: var(--text-color);
+        background-color: var(--white);
+      }
+
+      .form-group input:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+      }
+
+      .form-group input::placeholder {
+        color: var(--text-light);
+        opacity: 0.7;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.8rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: var(--transition);
+        border: none;
+        text-decoration: none;
+        font-family: inherit;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-color);
+        color: var(--white);
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .flash-messages {
+        margin-bottom: 2rem;
+      }
+
+      .alert {
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 500;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .alert-success {
+        background-color: var(--primary-light);
+        color: var(--primary-dark);
+        border-left: 4px solid var(--primary-color);
+      }
+
+      .alert-error {
+        background-color: #fff1f2;
+        color: #be123c;
+        border-left: 4px solid #e11d48;
+      }
+
+      .alert i {
+        font-size: 1.2rem;
+      }
+
+      .field-group {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 0;
+      }
+
+      .field-group .form-group {
+        flex: 1;
+      }
+
+      .password-section {
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--light-gray);
+      }
+
+      .password-section h4 {
+        color: var(--secondary-color);
+        margin-bottom: 1.5rem;
+        font-size: 1.25rem;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .profile-section {
+          padding: 0 1rem;
+          margin: 2rem auto;
+        }
+
+        .info-card {
+          padding: 1.5rem;
+        }
+
+        .field-group {
+          flex-direction: column;
+          gap: 0;
+        }
+
+        .nav-links {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">
+          <h1>FuelDel</h1>
+        </div>
+        <ul class="nav-links">
+          <li><a href="{{ url_for('home') }}">Home</a></li>
+          <li><a href="{{ url_for('marketplace') }}">Marketplace</a></li>
+          <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+          <li><a href="{{ url_for('profile') }}" class="active">Profile</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section class="profile-section">
+        <h2>Your Profile</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %}
+        <div class="flash-messages">
+          {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">
+            <i class="fas fa-info-circle"></i> {{ message }}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %} {% endwith %}
+
+        <div class="profile-content">
+          <div class="profile-info">
+            <div class="info-card">
+              <h3>Account Information</h3>
+              <form action="{{ url_for('profile') }}" method="POST">
+                <div class="field-group">
+                  <div class="form-group">
+                    <label for="username">Username</label>
+                    <input
+                      type="text"
+                      name="username"
+                      id="username"
+                      value="{{ user.username }}"
+                      required
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input
+                      type="email"
+                      name="email"
+                      id="email"
+                      value="{{ user.email }}"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="password-section">
+                  <h4>Change Password</h4>
+                  <div class="form-group">
+                    <label for="current_password">Current Password</label>
+                    <input
+                      type="password"
+                      name="current_password"
+                      id="current_password"
+                      placeholder="Enter your current password"
+                    />
+                  </div>
+
+                  <div class="field-group">
+                    <div class="form-group">
+                      <label for="new_password">New Password</label>
+                      <input
+                        type="password"
+                        name="new_password"
+                        id="new_password"
+                        placeholder="Enter new password"
+                      />
+                    </div>
+
+                    <div class="form-group">
+                      <label for="confirm_password">Confirm New Password</label>
+                      <input
+                        type="password"
+                        name="confirm_password"
+                        id="confirm_password"
+                        placeholder="Confirm new password"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save"></i> Update Profile
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 FuelDel. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

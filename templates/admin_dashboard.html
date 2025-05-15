@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - FuelDel{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Admin Dashboard</h1>
+        <div class="dashboard-actions">
+            <a href="{{ url_for('admin_products') }}" class="btn btn-primary">
+                <i class="fas fa-box"></i> Manage Products
+            </a>
+        </div>
+    </div>
+
+    <!-- Monthly Sales Summary -->
+    <div class="sales-summary">
+        <h2>Monthly Sales Overview</h2>
+        <div class="stats-grid">
+            {% for month, data in sales_data.items() %}
+            <div class="stat-card">
+                <h3>{{ month }}</h3>
+                <div class="stat-details">
+                    <div class="stat-item">
+                        <span class="label">Total Orders</span>
+                        <span class="value">{{ data.total_orders }}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">Total Sales</span>
+                        <span class="value">₹{{ "%.2f"|format(data.total_sales) }}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">Total Quantity</span>
+                        <span class="value">{{ data.total_quantity }}L</span>
+                    </div>
+                </div>
+                <div class="fuel-breakdown">
+                    <h4>Fuel Type Breakdown</h4>
+                    {% for fuel_type, fuel_data in data.fuel_types.items() %}
+                    <div class="fuel-item">
+                        <span class="fuel-name">{{ fuel_type }}</span>
+                        <span class="fuel-quantity">{{ fuel_data.quantity }}L</span>
+                        <span class="fuel-sales">₹{{ "%.2f"|format(fuel_data.sales) }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Recent Orders -->
+    <div class="recent-orders">
+        <h2>Recent Orders</h2>
+        <div class="order-list">
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Fuel Type</th>
+                        <th>Quantity</th>
+                        <th>Total Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>{{ order.username }}</td>
+                        <td>{{ order.fuel_type }}</td>
+                        <td>{{ order.quantity }}L</td>
+                        <td>₹{{ "%.2f"|format(order.total_price) }}</td>
+                        <td>
+                            <span class="status-badge status-{{ order.status.lower() }}">
+                                {{ order.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <form action="{{ url_for('update_order', order_id=order.id) }}" method="POST" class="status-form">
+                                <select name="status" onchange="this.form.submit()">
+                                    <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                    <option value="Confirmed" {% if order.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                                    <option value="En Route" {% if order.status == 'En Route' %}selected{% endif %}>En Route</option>
+                                    <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+                                    <option value="Cancelled" {% if order.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                                </select>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .stat-card h3 {
+        margin: 0 0 1rem 0;
+        color: #2c3e50;
+    }
+
+    .stat-details {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-item .label {
+        display: block;
+        font-size: 0.875rem;
+        color: #64748b;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-item .value {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .fuel-breakdown {
+        border-top: 1px solid #e2e8f0;
+        padding-top: 1rem;
+    }
+
+    .fuel-breakdown h4 {
+        margin: 0 0 1rem 0;
+        font-size: 1rem;
+        color: #475569;
+    }
+
+    .fuel-item {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    .fuel-name {
+        color: #64748b;
+    }
+
+    .fuel-quantity, .fuel-sales {
+        text-align: right;
+        color: #1e293b;
+    }
+
+    .status-form select {
+        padding: 0.5rem;
+        border-radius: 4px;
+        border: 1px solid #e2e8f0;
+    }
+</style>
+{% endblock %}

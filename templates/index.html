@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FuelDel - Fuel Delivery Service</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='static-files.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        /* Green Color Palette */
+        --primary-green: #2ecc71;
+        --primary-green-dark: #27ae60;
+        --primary-green-light: #7bed9f;
+        --primary-green-pale: #e3fcec;
+        --accent-green: #1abc9c;
+        --white: #f8f9fa;
+        --gray-100: #e9ecef;
+        --gray-200: #dee2e6;
+        --gray-300: #ced4da;
+        --gray-400: #adb5bd;
+        --gray-600: #6c757d;
+        --gray-700: #495057;
+        --gray-800: #343a40;
+        --gray-900: #212529;
+        --border-radius: 10px;
+        --box-shadow: 0 4px 12px rgba(46, 204, 113, 0.15);
+      }
+
+      body {
+        background-color: var(--white);
+        color: var(--gray-900);
+        font-family: "Inter", sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        background-color: rgba(29, 86, 51, 0.98);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 20px rgba(46, 204, 113, 0.2);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+      }
+
+      nav {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo i {
+        color: var(--primary-green);
+        font-size: 1.8rem;
+        margin-right: 0.5rem;
+      }
+
+      .logo h1 {
+        color: var(--white);
+        font-size: 1.8rem;
+        margin: 0;
+        background: linear-gradient(90deg, var(--white) 0%, var(--primary-green-light) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 1.5rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .nav-links a {
+        color: var(--gray-200);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+        position: relative;
+      }
+
+      .nav-links a:not(.btn)::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -4px;
+        left: 0;
+        background-color: var(--primary-green);
+        transition: width 0.3s ease;
+      }
+
+      .nav-links a:not(.btn):hover::after {
+        width: 100%;
+      }
+
+      .nav-links a:hover {
+        color: var(--primary-green-light);
+      }
+
+      .btn {
+        padding: 0.8rem 1.5rem;
+        border-radius: var(--border-radius);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-green);
+        color: var(--white);
+        font-weight: 600;
+        border: 2px solid transparent;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-green-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+      }
+
+      .hero {
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                    url("{{ url_for('static', filename='pexels-quintingellar-2199293.jpg') }}");
+        background-size: cover;
+        background-position: center;
+        height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: var(--white);
+        padding: 0 2rem;
+        margin-top: 4rem;
+        position: relative;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at center, rgba(46, 204, 113, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%);
+        z-index: 1;
+      }
+
+      .hero-content {
+        max-width: 800px;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 3rem;
+        border-radius: var(--border-radius);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(46, 204, 113, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        position: relative;
+        z-index: 2;
+        animation: fadeIn 1s ease-out;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .hero h1 {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        font-weight: 800;
+        letter-spacing: -1px;
+      }
+
+      .hero p {
+        font-size: 1.3rem;
+        margin-bottom: 2.5rem;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        line-height: 1.6;
+        opacity: 0.95;
+      }
+
+      .btn-large {
+        padding: 1.2rem 3rem;
+        font-size: 1.2rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+
+      .fuel-animation {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: linear-gradient(90deg, var(--primary-green-dark), var(--primary-green), var(--primary-green-light));
+        opacity: 0.7;
+        z-index: 1;
+      }
+
+      .services {
+        padding: 6rem 2rem;
+        background-color: var(--primary-green-pale);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .services::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(46, 204, 113, 0.1) 0%,
+          transparent 100%
+        );
+        z-index: 0;
+      }
+
+      .section-title {
+        text-align: center;
+        position: relative;
+        margin-bottom: 3rem;
+        z-index: 1;
+      }
+
+      .section-title h2 {
+        color: var(--gray-900);
+        font-size: 2.8rem;
+        display: inline-block;
+        position: relative;
+        margin-bottom: 0.5rem;
+      }
+
+      .section-title h2::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: var(--primary-green);
+        border-radius: 2px;
+      }
+
+      .section-title p {
+        color: var(--gray-600);
+        font-size: 1.2rem;
+        max-width: 600px;
+        margin: 1rem auto 0;
+      }
+
+      .service-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      .card {
+        background: var(--white);
+        padding: 2.5rem 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 1px solid var(--primary-green-light);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: var(--primary-green);
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 0.5s ease;
+      }
+
+      .card:hover::after {
+        transform: scaleX(1);
+        transform-origin: left;
+      }
+
+      .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(46, 204, 113, 0.2);
+      }
+
+      .card i {
+        color: var(--white);
+        background: linear-gradient(135deg, var(--primary-green), var(--primary-green-dark));
+        font-size: 2.5rem;
+        width: 90px;
+        height: 90px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        margin: 0 auto 1.5rem;
+        box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        position: relative;
+        z-index: 1;
+      }
+
+      .card i::after {
+        content: '';
+        position: absolute;
+        top: -8px;
+        left: -8px;
+        right: -8px;
+        bottom: -8px;
+        border-radius: 50%;
+        border: 2px dashed var(--primary-green-light);
+        animation: spin 20s linear infinite;
+        z-index: -1;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .card h3 {
+        color: var(--gray-900);
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+      }
+
+      .card p {
+        color: var(--gray-600);
+        font-size: 1.05rem;
+        line-height: 1.6;
+      }
+
+      .about {
+        padding: 6rem 2rem;
+        background: linear-gradient(135deg, var(--primary-green-dark) 0%, var(--accent-green) 100%);
+        text-align: center;
+        color: var(--white);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .about::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='rgba(255,255,255,0.05)' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+        opacity: 0.6;
+      }
+
+      .about-content {
+        position: relative;
+        z-index: 2;
+      }
+
+      .about h2 {
+        color: var(--white);
+        font-size: 2.8rem;
+        margin-bottom: 2rem;
+        position: relative;
+        display: inline-block;
+      }
+
+      .about h2::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: var(--white);
+        border-radius: 2px;
+      }
+
+      .about p {
+        max-width: 800px;
+        margin: 0 auto 1.5rem;
+        font-size: 1.2rem;
+        line-height: 1.8;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .about-stats {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 3rem;
+        margin-top: 3rem;
+      }
+
+      .stat-item {
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--white);
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-label {
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.8);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .contact {
+        padding: 6rem 2rem;
+        background-color: var(--white);
+        position: relative;
+      }
+
+      .contact::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100%;
+        background: linear-gradient(
+          45deg,
+          rgba(46, 204, 113, 0.05) 0%,
+          transparent 100%
+        );
+        z-index: 0;
+      }
+
+      .contact-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      .contact-info div {
+        padding: 2.5rem;
+        background: var(--white);
+        border-radius: var(--border-radius);
+        transition: all 0.3s ease;
+        border: 1px solid var(--gray-200);
+        box-shadow: var(--box-shadow);
+      }
+
+      .contact-info div:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(46, 204, 113, 0.15);
+        border-color: var(--primary-green-light);
+      }
+
+      .contact-info i {
+        color: var(--white);
+        background: linear-gradient(135deg, var(--primary-green), var(--primary-green-dark));
+        font-size: 2rem;
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        margin: 0 auto 1.5rem;
+        box-shadow: 0 5px 15px rgba(46, 204, 113, 0.2);
+      }
+
+      .contact-info p {
+        color: var(--gray-700);
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+
+      footer {
+        background: linear-gradient(to right, var(--gray-900), #1d3c34);
+        color: var(--gray-400);
+        text-align: center;
+        padding: 2rem;
+        position: relative;
+      }
+
+      footer::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-green-dark), var(--primary-green), var(--primary-green-light));
+      }
+
+      .scroll-top {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 50px;
+        height: 50px;
+        background: var(--primary-green);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        opacity: 0;
+        visibility: hidden;
+        z-index: 1000;
+        box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+      }
+
+      .scroll-top.active {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .scroll-top:hover {
+        background: var(--primary-green-dark);
+        transform: translateY(-5px);
+      }
+
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+          position: fixed;
+          top: 4rem;
+          left: 0;
+          right: 0;
+          background: rgba(29, 86, 51, 0.95);
+          backdrop-filter: blur(10px);
+          padding: 1rem;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .nav-links.active {
+          display: flex;
+        }
+
+        .nav-toggle {
+          display: block;
+          background: none;
+          border: none;
+          color: var(--white);
+          font-size: 1.5rem;
+          cursor: pointer;
+        }
+
+        .hero {
+          height: 85vh;
+        }
+
+        .hero-content {
+          padding: 2rem;
+        }
+
+        .hero h1 {
+          font-size: 2.8rem;
+        }
+
+        .hero p {
+          font-size: 1.1rem;
+          margin-bottom: 2rem;
+        }
+
+        .btn-large {
+          padding: 1rem 2.5rem;
+          font-size: 1.1rem;
+        }
+
+        .section-title h2,
+        .about h2 {
+          font-size: 2.2rem;
+        }
+
+        .card i,
+        .contact-info i {
+          width: 70px;
+          height: 70px;
+          font-size: 2rem;
+        }
+        
+        .about-stats {
+          gap: 2rem;
+        }
+        
+        .stat-number {
+          font-size: 2.5rem;
+        }
+      }
+
+      /* Animated fuel drops */
+      .fuel-drops {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      .drop {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: var(--primary-green);
+        border-radius: 50%;
+        opacity: 0.2;
+        animation: drop 10s infinite;
+      }
+
+      @keyframes drop {
+        0% {
+          transform: translateY(-100px) scale(0);
+          opacity: 0;
+        }
+        50% {
+          opacity: 0.2;
+        }
+        100% {
+          transform: translateY(1000px) scale(1);
+          opacity: 0;
+        }
+      }
+
+      .eco-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 50px;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--primary-green-dark);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+      }
+
+      .eco-badge i {
+        color: var(--primary-green);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">
+          <i class="fas fa-leaf"></i>
+          <h1>FuelDel</h1>
+        </div>
+        <button class="nav-toggle" aria-label="Toggle navigation">
+          <i class="fas fa-bars"></i>
+        </button>
+        <ul class="nav-links">
+          <li><a href="{{ url_for('home') }}">Home</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#contact">Contact</a></li>
+          {% if 'loggedin' in session %}
+          <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+          {% else %}
+          <li>
+            <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
+          </li>
+          <li><a href="{{ url_for('register') }}" class="btn">Register</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="fuel-drops">
+          <div class="drop" style="left: 20%; animation-delay: 0s;"></div>
+          <div class="drop" style="left: 35%; animation-delay: 2s;"></div>
+          <div class="drop" style="left: 50%; animation-delay: 4s;"></div>
+          <div class="drop" style="left: 65%; animation-delay: 6s;"></div>
+          <div class="drop" style="left: 80%; animation-delay: 8s;"></div>
+        </div>
+        <div class="eco-badge">
+          <i class="fas fa-recycle"></i> Eco-Friendly Delivery
+        </div>
+        <div class="hero-content">
+          <h1>Fuel Delivery Made Simple</h1>
+          <p>
+            Get Petrol, diesel, or propane delivered right to your doorstep with
+            just a few clicks
+          </p>
+          {% if 'loggedin' in session %}
+          <a
+            href="{{ url_for('marketplace') }}"
+            class="btn btn-large btn-primary"
+            >Place an Order</a
+          >
+          {% else %}
+          <a href="{{ url_for('register') }}" class="btn btn-large btn-primary"
+            >Get Started</a
+          >
+          {% endif %}
+        </div>
+        <div class="fuel-animation"></div>
+      </section>
+
+      <section id="services" class="services">
+        <div class="section-title">
+          <h2>Our Services</h2>
+          <p>We offer premium fuel delivery services tailored to your needs</p>
+        </div>
+        <div class="service-cards">
+          <div class="card">
+            <i class="fas fa-gas-pump"></i>
+            <h3>Petrol Delivery</h3>
+            <p>Premium Petrol delivered directly to your location with our state-of-the-art delivery vehicles ensuring safety and quality.</p>
+          </div>
+          <div class="card">
+            <i class="fas fa-truck"></i>
+            <h3>Diesel Delivery</h3>
+            <p>High-quality diesel for your vehicles and machinery delivered on time by our experienced professionals.</p>
+          </div>
+          <div class="card">
+            <i class="fas fa-fire"></i>
+            <h3>Propane Delivery</h3>
+            <p>Propane tanks refilled or replaced at your convenience with our efficient and reliable delivery service.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="about">
+        <div class="about-content">
+          <h2>About FuelDel</h2>
+          <p>
+            FuelDel is a modern fuel delivery service dedicated to making fuel
+            access convenient and reliable. We deliver various types of fuel
+            directly to your location, saving you time and hassle.
+          </p>
+          <p>
+            Our team of experienced professionals ensures safe and timely delivery
+            of fuel, whether you need it for your vehicle, home, or business.
+          </p>
+          <div class="about-stats">
+            <div class="stat-item">
+              <div class="stat-number">5000+</div>
+              <div class="stat-label">Happy Customers</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">12</div>
+              <div class="stat-label">Cities Served</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">24/7</div>
+              <div class="stat-label">Customer Support</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="contact">
+        <div class="section-title">
+          <h2>Contact Us</h2>
+          <p>Have questions? We're here to help!</p>
+        </div>
+        <div class="contact-info">
+          <div>
+            <i class="fas fa-map-marker-alt"></i>
+            <p>Viit College Pune</p>
+          </div>
+          <div>
+            <i class="fas fa-phone"></i>
+            <p>+91 981012345</p>
+          </div>
+          <div>
+            <i class="fas fa-envelope"></i>
+            <p>info@fueldel.com</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <a href="#" class="scroll-top" id="scrollTop">
+      <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <footer>
+      <p>&copy; 2025 FuelDel. All rights reserved.</p>
+    </footer>
+
+    <script>
+      // Mobile navigation toggle
+      document.querySelector(".nav-toggle").addEventListener("click", () => {
+        document.querySelector(".nav-links").classList.toggle("active");
+      });
+
+      // Close mobile menu when clicking outside
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest("nav")) {
+          document.querySelector(".nav-links").classList.remove("active");
+        }
+      });

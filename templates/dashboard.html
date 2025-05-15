@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - FuelDel</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='static-files.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #1e293b;
+        --secondary-color: #0ea5e9;
+        --accent-color: #f97316;
+        --success-color: #10b981;
+        --warning-color: #eab308;
+        --danger-color: #ef4444;
+        --light-color: #f8fafc;
+        --dark-color: #0f172a;
+        --border-radius: 12px;
+        --box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      body {
+        background-color: #f1f5f9;
+        color: var(--dark-color);
+        font-family: "Plus Jakarta Sans", sans-serif;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        background-color: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      nav {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo h1 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--primary-color);
+        margin: 0;
+        background: linear-gradient(
+          135deg,
+          var(--secondary-color),
+          var(--accent-color)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .nav-links {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        gap: 1.5rem;
+      }
+
+      .nav-links li a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        transition: var(--transition);
+      }
+
+      .nav-links li a:hover {
+        background-color: rgba(14, 165, 233, 0.1);
+        color: var(--secondary-color);
+      }
+
+      .nav-links li a.active {
+        background-color: var(--secondary-color);
+        color: white;
+      }
+
+      main {
+        flex-grow: 1;
+        padding: 2rem 0;
+      }
+
+      .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+      }
+
+      .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        background: white;
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .dashboard-header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(
+          90deg,
+          var(--secondary-color),
+          var(--accent-color)
+        );
+      }
+
+      .dashboard-header h1 {
+        color: var(--primary-color);
+        font-size: 2rem;
+        margin: 0;
+        position: relative;
+      }
+
+      h2 {
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        position: relative;
+        display: inline-block;
+      }
+
+      h2::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: var(--secondary-color);
+        border-radius: 2px;
+      }
+
+      .order-card {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--box-shadow);
+        transition: var(--transition);
+        border-left: 5px solid var(--secondary-color);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .order-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #e2e8f0;
+      }
+
+      .order-header h3 {
+        color: var(--primary-color);
+        margin: 0;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .order-header h3::before {
+        content: "#";
+        color: var(--secondary-color);
+        font-weight: 800;
+      }
+
+      .order-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .detail-item {
+        padding: 1.5rem;
+        background: #f8fafc;
+        border-radius: var(--border-radius);
+        transition: var(--transition);
+        border: 1px solid #e2e8f0;
+      }
+
+      .detail-item:hover {
+        background: white;
+        border-color: var(--secondary-color);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .detail-item label {
+        display: block;
+        font-size: 0.875rem;
+        color: #64748b;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .detail-item span {
+        font-weight: 700;
+        color: var(--primary-color);
+        font-size: 1.25rem;
+        display: block;
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        gap: 0.5rem;
+      }
+
+      .status-pending {
+        background-color: rgba(234, 179, 8, 0.15);
+        color: var(--warning-color);
+        border: 1px solid var(--warning-color);
+      }
+
+      .status-pending::before {
+        content: "";
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: var(--warning-color);
+        animation: pulse 1.5s infinite;
+      }
+
+      .status-completed {
+        background-color: rgba(16, 185, 129, 0.15);
+        color: var(--success-color);
+        border: 1px solid var(--success-color);
+      }
+
+      .status-completed::before {
+        content: "";
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: var(--success-color);
+      }
+
+      .status-cancelled {
+        background-color: rgba(239, 68, 68, 0.15);
+        color: var(--danger-color);
+        border: 1px solid var(--danger-color);
+      }
+
+      .status-cancelled::before {
+        content: "";
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: var(--danger-color);
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 0.8rem 1.5rem;
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 0.95rem;
+      }
+
+      .btn-primary {
+        background-color: var(--secondary-color);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: #0284c7;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-review {
+        background-color: var(--secondary-color);
+        color: white;
+      }
+
+      .btn-review:hover {
+        background-color: #0284c7;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-success {
+        background-color: var(--success-color);
+        color: white;
+      }
+
+      .btn-success:hover {
+        background-color: #059669;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-invoice {
+        background-color: #8b5cf6;
+        color: white;
+      }
+
+      .btn-invoice:hover {
+        background-color: #7c3aed;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .no-orders {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .no-orders img {
+        width: 150px;
+        margin-bottom: 2rem;
+        opacity: 0.8;
+      }
+
+      .no-orders h3 {
+        color: var(--primary-color);
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+      }
+
+      .no-orders p {
+        color: #64748b;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+      }
+
+      .fuel-icon {
+        width: 50px;
+        height: 50px;
+        background-color: rgba(14, 165, 233, 0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        transition: var(--transition);
+      }
+
+      .fuel-icon i {
+        color: var(--secondary-color);
+        font-size: 1.4rem;
+      }
+
+      .order-type {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .order-type h4 {
+        margin: 0;
+        font-size: 1.25rem;
+        color: var(--primary-color);
+      }
+
+      footer {
+        background-color: var(--primary-color);
+        color: white;
+        text-align: center;
+        padding: 2rem;
+        margin-top: 3rem;
+      }
+
+      footer p {
+        margin: 0;
+        font-size: 0.95rem;
+        opacity: 0.8;
+      }
+
+      .qr-code {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: white;
+        padding: 0.75rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: var(--transition);
+      }
+
+      .qr-code:hover {
+        transform: scale(1.05);
+      }
+
+      .qr-code img {
+        width: 70px;
+        height: 70px;
+      }
+
+      .qr-code span {
+        font-size: 0.75rem;
+        color: #64748b;
+        margin-top: 0.25rem;
+        font-weight: 500;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(0.95);
+          box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7);
+        }
+
+        70% {
+          transform: scale(1);
+          box-shadow: 0 0 0 10px rgba(234, 179, 8, 0);
+        }
+
+        100% {
+          transform: scale(0.95);
+          box-shadow: 0 0 0 0 rgba(234, 179, 8, 0);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .dashboard-header {
+          flex-direction: column;
+          gap: 1rem;
+          align-items: flex-start;
+        }
+
+        .btn {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+          width: 100%;
+        }
+
+        .nav-links {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">
+          <h1>FuelDel</h1>
+        </div>
+        <ul class="nav-links">
+          <li><a href="{{ url_for('home') }}">Home</a></li>
+          <li><a href="{{ url_for('marketplace') }}">Marketplace</a></li>
+          <li>
+            <a href="{{ url_for('dashboard') }}" class="active">Dashboard</a>
+          </li>
+          <li><a href="{{ url_for('profile') }}">Profile</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <div class="dashboard-container">
+        <div class="dashboard-header">
+          <h1>Welcome, {{ username }}</h1>
+          <a href="{{ url_for('marketplace') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Place New Order
+          </a>
+        </div>
+
+        <h2>Your Orders</h2>
+
+        {% if orders %} {% for order in orders %}
+        <div class="order-card">
+          <div class="order-header">
+            <h3>{{ order.id }}</h3>
+            <span class="status-badge status-{{ order.status.lower() }}">
+              {{ order.status }}
+            </span>
+          </div>
+
+          <div class="order-type">
+            <div class="fuel-icon">
+              <i class="fas fa-gas-pump"></i>
+            </div>
+            <h4>{{ order.fuel_type }}</h4>
+          </div>
+
+          <div class="order-details">
+            <div class="detail-item">
+              <label>Quantity</label>
+              <span>{{ order.quantity }}L</span>
+            </div>
+            <div class="detail-item">
+              <label>Total Price</label>
+              <span>₹ {{ order.total_price }}</span>
+            </div>
+            <div class="detail-item">
+              <label>Delivery Date</label>
+              <span>{{ order.delivery_date }}</span>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            {% if order.status == 'Completed' %}
+            <a
+              href="{{ url_for('review', order_id=order.id) }}"
+              class="btn btn-review"
+            >
+              <i class="fas fa-star"></i> Leave Review
+            </a>
+            {% elif order.status == 'Pending' %}
+            <form
+              action="{{ url_for('complete_order', order_id=order.id) }}"
+              method="POST"
+              style="display: inline"
+            >
+              <button type="submit" class="btn btn-success">
+                <i class="fas fa-check"></i> Mark as Completed
+              </button>
+            </form>
+            {% endif %}
+
+            <!-- Download PDF Invoice -->
+            <a
+              href="{{ url_for('invoice_pdf', order_id=order.id) }}"
+              class="btn btn-invoice"
+            >
+              <i class="fas fa-file-download"></i> Download Invoice
+            </a>
+
+            <!-- QR Code for Invoice -->
+            <a
+              href="{{ url_for('qr_invoice', order_id=order.id) }}"
+              target="_blank"
+              class="qr-code"
+              title="Scan QR to view invoice"
+            >
+              <img
+                src="{{ url_for('qr_invoice', order_id=order.id) }}"
+                alt="QR Invoice"
+              />
+              <span>Scan Invoice</span>
+            </a>
+          </div>
+        </div>
+        {% endfor %} {% else %}
+        <div class="no-orders">
+          <img src="/api/placeholder/300/200" alt="No orders illustration" />
+          <h3>No orders yet</h3>
+          <p>Start by placing your first order in our marketplace!</p>
+          <a href="{{ url_for('marketplace') }}" class="btn btn-primary">
+            <i class="fas fa-shopping-cart"></i> Browse Products
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 FuelDel. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

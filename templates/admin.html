@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Sales Summary</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='static-files.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #3a86ff;
+        --primary-dark: #2667ca;
+        --secondary-color: #ff6b6b;
+        --text-color: #333;
+        --text-light: #666;
+        --bg-light: #f8f9fa;
+        --bg-white: #ffffff;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        --border-radius: 12px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f0f4f8;
+        color: var(--text-color);
+        line-height: 1.6;
+      }
+
+      header {
+        background: linear-gradient(135deg, #3a86ff 0%, #4361ee 100%);
+        color: white;
+        padding: 0.5rem 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0.75rem 0;
+      }
+
+      .logo h1 {
+        font-size: 1.5rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+      }
+
+      .nav-links {
+        display: flex;
+        list-style: none;
+        gap: 2rem;
+      }
+
+      .nav-links a {
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        padding: 0.5rem 0;
+        border-bottom: 2px solid transparent;
+        transition: all 0.3s ease;
+      }
+
+      .nav-links a:hover {
+        color: white;
+        border-bottom: 2px solid white;
+      }
+
+      main {
+        min-height: calc(100vh - 140px);
+        padding: 2rem 1rem;
+      }
+
+      .sales-summary {
+        max-width: 1000px;
+        margin: 1rem auto 3rem;
+        padding: 2.5rem;
+        background: var(--bg-white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+      }
+
+      .sales-summary h2 {
+        text-align: center;
+        margin-bottom: 2rem;
+        font-size: 1.75rem;
+        color: #1a202c;
+        font-weight: 700;
+        position: relative;
+        padding-bottom: 1rem;
+      }
+
+      .sales-summary h2:after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 4px;
+        background: var(--primary-color);
+        border-radius: 2px;
+      }
+
+      .sales-summary h2 i {
+        color: var(--primary-color);
+        margin-right: 10px;
+      }
+
+      .sales-form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1.25rem;
+        flex-wrap: wrap;
+        margin: 1.5rem 0 2.5rem;
+        padding: 1.5rem;
+        background-color: var(--bg-light);
+        border-radius: var(--border-radius);
+      }
+
+      .date-input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .sales-form label {
+        font-weight: 600;
+        color: var(--text-light);
+        font-size: 0.9rem;
+      }
+
+      .sales-form input[type="date"] {
+        padding: 0.7rem 1rem;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        font-size: 0.95rem;
+        background-color: white;
+        transition: all 0.3s ease;
+        width: 180px;
+      }
+
+      .sales-form input[type="date"]:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.15);
+      }
+
+      .btn.btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 0.7rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+        box-shadow: 0 4px 10px rgba(74, 134, 232, 0.2);
+      }
+
+      .btn.btn-primary:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 14px rgba(74, 134, 232, 0.25);
+      }
+
+      .btn.btn-primary:active {
+        transform: translateY(0);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-top: 1rem;
+        background: var(--bg-white);
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      }
+
+      thead {
+        position: sticky;
+        top: 0;
+      }
+
+      th {
+        background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+        color: white;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 1rem 1.5rem;
+        text-align: left;
+        letter-spacing: 0.5px;
+      }
+
+      th:first-child {
+        border-top-left-radius: 10px;
+      }
+
+      th:last-child {
+        border-top-right-radius: 10px;
+        text-align: right;
+      }
+
+      td {
+        padding: 1.2rem 1.5rem;
+        font-size: 0.95rem;
+        color: var(--text-color);
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      td:last-child {
+        font-weight: 600;
+        color: #10b981;
+        text-align: right;
+      }
+
+      tr:nth-child(even) {
+        background-color: #fafbfc;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      tr:hover {
+        background-color: #f1f5f9;
+      }
+
+      .no-data {
+        text-align: center;
+        margin: 3rem 0;
+        padding: 2rem;
+        color: var(--text-light);
+        background-color: var(--bg-light);
+        border-radius: var(--border-radius);
+        font-size: 1.1rem;
+      }
+
+      .no-data i {
+        font-size: 3rem;
+        color: #cbd5e1;
+        margin-bottom: 1rem;
+        display: block;
+      }
+
+      footer {
+        background-color: #1e293b;
+        color: rgba(255, 255, 255, 0.7);
+        padding: 1.5rem;
+        text-align: center;
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 768px) {
+        .sales-form {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .sales-form input[type="date"] {
+          width: 100%;
+        }
+
+        .sales-summary {
+          padding: 1.5rem;
+        }
+
+        th,
+        td {
+          padding: 0.8rem;
+        }
+
+        .nav-links {
+          gap: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">
+          <h1>FuelDel Admin</h1>
+        </div>
+        <ul class="nav-links">
+          <li><a href="{{ url_for('home') }}">Home</a></li>
+          <li><a href="{{ url_for('marketplace') }}">Marketplace</a></li>
+          <li><a href="{{ url_for('admin') }}">Sales Summary</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section class="sales-summary">
+        <h2><i class="fas fa-chart-line"></i> Sales Summary</h2>
+        <form method="POST" action="{{ url_for('admin') }}" class="sales-form">
+          <div class="date-input-group">
+            <label for="start_date">From Date</label>
+            <input
+              type="date"
+              name="start_date"
+              id="start_date"
+              required
+              value="{{ start_date or '' }}"
+            />
+          </div>
+          <div class="date-input-group">
+            <label for="end_date">To Date</label>
+            <input
+              type="date"
+              name="end_date"
+              id="end_date"
+              required
+              value="{{ end_date or '' }}"
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search"></i> Generate Report
+          </button>
+        </form>
+
+        {% if sales_summary %}
+        <a
+          href="{{ url_for('download_filtered_sales') }}"
+          class="btn btn-primary"
+          style="margin-top: 1rem"
+        >
+          <i class="fas fa-download"></i> Download This Summary (CSV)
+        </a>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Total Orders</th>
+              <th>Total Quantity</th>
+              <th>Total Revenue</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in sales_summary %}
+            <tr>
+              <td>{{ row.sale_date }}</td>
+              <td>{{ row.total_orders }}</td>
+              <td>{{ row.total_quantity }}</td>
+              <td>₹{{ row.total_revenue }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="no-data">
+          <i class="fas fa-chart-area"></i>
+          <p>No sales data available for the selected date range.</p>
+        </div>
+        {% endif %}
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 FuelDel. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

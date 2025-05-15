@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Review Order - FuelDel</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='static-files.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+        --success-color: #2ecc71;
+        --warning-color: #f1c40f;
+        --danger-color: #e74c3c;
+        --light-color: #ecf0f1;
+        --dark-color: #2c3e50;
+        --border-radius: 8px;
+        --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      body {
+        background-color: #f5f7fa;
+        color: var(--dark-color);
+        font-family: "Inter", sans-serif;
+      }
+
+      .review-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+      }
+
+      .review-container h2 {
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        font-size: 1.8rem;
+      }
+
+      .order-details {
+        background: var(--light-color);
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        margin-bottom: 2rem;
+      }
+
+      .order-details h3 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+      }
+
+      .order-details p {
+        margin: 0.5rem 0;
+        color: #7f8c8d;
+      }
+
+      .order-details strong {
+        color: var(--primary-color);
+        font-weight: 600;
+      }
+
+      .rating-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 2rem 0;
+      }
+
+      .rating-container h3 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+      }
+
+      .stars {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .star {
+        font-size: 2.5rem;
+        color: #ddd;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .star:hover {
+        transform: scale(1.1);
+      }
+
+      .star.active {
+        color: var(--warning-color);
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.8rem;
+        font-weight: 500;
+        color: var(--primary-color);
+      }
+
+      .form-group textarea {
+        width: 100%;
+        min-height: 150px;
+        padding: 1rem;
+        border: 2px solid var(--light-color);
+        border-radius: var(--border-radius);
+        resize: vertical;
+        font-family: "Inter", sans-serif;
+        transition: border-color 0.3s ease;
+      }
+
+      .form-group textarea:focus {
+        outline: none;
+        border-color: var(--secondary-color);
+      }
+
+      .btn-primary {
+        background-color: var(--secondary-color);
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: var(--border-radius);
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      .btn-primary:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .fuel-icon {
+        width: 50px;
+        height: 50px;
+        background-color: var(--light-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+      }
+
+      .fuel-icon i {
+        color: var(--secondary-color);
+        font-size: 1.5rem;
+      }
+
+      .order-type {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">
+          <h1>FuelDel</h1>
+        </div>
+        <ul class="nav-links">
+          <li><a href="{{ url_for('home') }}">Home</a></li>
+          <li><a href="{{ url_for('marketplace') }}">Marketplace</a></li>
+          <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+          <li><a href="{{ url_for('profile') }}">Profile</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <div class="review-container">
+        <h2>Review Your Order</h2>
+
+        <div class="order-type">
+          <div class="fuel-icon">
+            <i class="fas fa-gas-pump"></i>
+          </div>
+          <h3>{{ order.fuel_type }}</h3>
+        </div>
+
+        <div class="order-details">
+          <h3>Order Details</h3>
+          <p><strong>Quantity:</strong> {{ order.quantity }}L</p>
+          <p><strong>Delivery Date:</strong> {{ order.delivery_date }}</p>
+          <p><strong>Total Price:</strong> ${{ order.total_price }}</p>
+        </div>
+
+        <form action="{{ url_for('review', order_id=order.id) }}" method="POST">
+          <div class="rating-container">
+            <h3>Rate Your Experience</h3>
+            <div class="stars">
+              {% for i in range(1, 6) %}
+              <i
+                class="fas fa-star star {% if review and review.rating >= i %}active{% endif %}"
+                data-rating="{{ i }}"
+              ></i>
+              {% endfor %}
+            </div>
+            <input
+              type="hidden"
+              name="rating"
+              id="rating"
+              value="{{ review.rating if review else 0 }}"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="comment">Your Review</label>
+            <textarea
+              id="comment"
+              name="comment"
+              placeholder="Share your experience..."
+            >
+{{ review.comment if review else '' }}</textarea
+            >
+          </div>
+
+          <button type="submit" class="btn-primary">
+            <i class="fas fa-paper-plane"></i> Submit Review
+          </button>
+        </form>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const stars = document.querySelectorAll(".star");
+        const ratingInput = document.getElementById("rating");
+
+        stars.forEach((star) => {
+          star.addEventListener("click", function () {
+            const rating = this.dataset.rating;
+            ratingInput.value = rating;
+
+            stars.forEach((s) => {
+              if (s.dataset.rating <= rating) {
+                s.classList.add("active");
+              } else {
+                s.classList.remove("active");
+              }
+            });
+          });
+
+          star.addEventListener("mouseover", function () {
+            const rating = this.dataset.rating;
+            stars.forEach((s) => {
+              if (s.dataset.rating <= rating) {
+                s.style.color = "#f1c40f";
+              }
+            });
+          });
+
+          star.addEventListener("mouseout", function () {
+            const currentRating = ratingInput.value;
+            stars.forEach((s) => {
+              if (s.dataset.rating <= currentRating) {
+                s.style.color = "#f1c40f";
+              } else {
+                s.style.color = "#ddd";
+              }
+            });
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
